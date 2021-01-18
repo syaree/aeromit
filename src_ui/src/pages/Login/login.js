@@ -1,7 +1,6 @@
-import axios from "axios"
 import {Cookies} from "quasar"
-import urlencoded from "form-urlencoded"
 import {validate} from "email-validator"
+import {checkError} from "src/handlers/error";
 
 export default {
   name: 'LoginPage',
@@ -9,8 +8,24 @@ export default {
     return {
       email: null,
       password: null,
-      pesan: "",
-      errorStatus: false
+    }
+  },
+  beforeRouteEnter(to, from, next) {
+    const check = to.matched.some(value => value.name === "masuk")
+
+    if (check) {
+      const token = Cookies.get("_msk")
+
+      if (token) next({ path: from.path })
+      else next()
+    } else next()
+  },
+  computed: {
+    pesan: function () {
+      return `${this.$store.getters["kegiatan/kegiatanPesanGetter"]}. ${this.$store.getters["kegiatan/kegiatanHasilGetter"]}`
+    },
+    showBanner: function () {
+      return this.$store.getters["kegiatan/kegiatanSuksesGetter"]
     }
   },
   methods: {
@@ -23,28 +38,25 @@ export default {
           password: this.password
         }
 
-        const token = await this.$store.dispatch(
+        const result = await this.$store.dispatch(
           "otentikasi/otentikasiAction",
           data
         )
 
-        Cookies.set("_msk", token)
+        const token = result["data"]["hasil"]
+
+        Cookies.set("_msk", token, {
+          expires: process.env.APP_EXPIRE,
+          sameSite: 'Lax'
+        })
+
         this.$q.loadingBar.stop()
-        // this.$router.push({name: "utama"}).then((_) => _)
+        this.$store.commit("otentikasi/tokenExistMutation", true)
+        this.$router.push({name: "utama"}).then((_) => {})
       } catch (err) {
-        this.errorStatus = true
         this.$q.loadingBar.stop()
 
-        if (err.response) {
-          let data = err.response.data
-          if (data.hasOwnProperty("pesan")) {
-            this.pesan = data["pesan"]
-          } else {
-            this.pesan = data
-          }
-        } else {
-          this.pesan = err.message
-        }
+        checkError(err, this.$store)
       }
     },
     onReset() {

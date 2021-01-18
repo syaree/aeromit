@@ -8,6 +8,7 @@ APP_ADDRESS=127.0.0.1:8080
 APP_SALT=RASA_ASIN
 APP_SECRET=super_secret
 APP_EXPIRE=7
+MAX_PAGE=10
 DEFAULT_DATABASE_NAME=<database_name>
 DATABASE_URL=mongodb+srv://<USER>:<PASSWORD>@<HOST>/<database_name>?retryWrites=true&w=majority
 ```
@@ -24,6 +25,8 @@ Pengembangan ui dilakukan menggunakan [Quasar](https://quasar.dev/) dan dibuat m
 Siapkan _Environment Variable_ di terminal/console dengan contoh berikut:
 ```
 APP_ADDRESS=http://127.0.0.1:8080
+APP_EXPIRE=7
+MAX_PAGE=10
 ```
 
 Jalankan development server:

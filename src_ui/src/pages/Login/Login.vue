@@ -6,7 +6,7 @@
         <div>Masuk Aeromit</div>
       </q-bar>
 
-      <q-card-section v-if="errorStatus">
+      <q-card-section v-if="!showBanner">
         <q-banner rounded inline-actions class="text-white bg-negative">
           {{ pesan }}
           <template v-slot:avatar>
@@ -26,7 +26,7 @@
             filled
             v-model="email"
             label="Email"
-            hint="Ketik email Anda"
+            hint=""
             autocomplete="off"
             lazy-rules
             :rules="[
@@ -40,17 +40,17 @@
             type="password"
             v-model="password"
             label="Password"
-            hint="Ketik sandi Anda"
+            hint=""
             lazy-rules
             :rules="[
               val => val !== null && val !== '' || 'Sandi harus diisi',
-              val => val.length > 3 || 'Minimum sandi 3 karakter'
+              val => val.length >= 6 || 'Minimum sandi 6 karakter'
             ]"
           />
 
           <div>
-            <q-btn label="Submit" type="submit" color="primary"/>
-            <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
+            <q-btn label="Masuk" type="submit" color="primary"/>
+            <q-btn label="Kosongkan" type="reset" color="primary" flat class="q-ml-sm" />
           </div>
         </q-form>
       </q-card-section>
